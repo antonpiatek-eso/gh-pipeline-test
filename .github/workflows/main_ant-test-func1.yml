@@ -41,3 +41,11 @@ jobs:
           slot-name: 'Production'
           package: '${{ env.AZURE_FUNCTIONAPP_PACKAGE_PATH }}/output'
           publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE_C6ADCD3FF2954889AAEE9458525567A2 }}
+
+      - name: Deploy to Azure Functions (Staging)
+        uses: Azure/functions-action@v1
+        with:
+          app-name: 'ant-test-func1' # change if staging uses a different app
+          slot-name: 'staging'       # or another slot/environment as appropriate
+          package: '${{ env.AZURE_FUNCTIONAPP_PACKAGE_PATH }}/output'
+          publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE_C6ADCD3FF2954889AAEE9458525567A2 }}
