@@ -37,6 +37,7 @@ jobs:
       
   deploy:
     needs: build
-    uses: ./.github/workflows/deploy.yml     
+    uses: ./.github/workflows/deploy.yml    
     secrets:
-      AZUREAPPSERVICE_PUBLISHPROFILE_C6ADCD3FF2954889AAEE9458525567A2: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE_C6ADCD3FF2954889AAEE9458525567A2 }}     
+      PUBLISH_PROFILE: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE_C6ADCD3FF2954889AAEE9458525567A2 }}     
+      

@@ -30,7 +30,7 @@ jobs:
           app-name: 'ant-test-func1'
           slot-name: 'Production' # or your staging slot
           package: '${{ env.AZURE_FUNCTIONAPP_PACKAGE_PATH }}/output'
-          publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE_C6ADCD3FF2954889AAEE9458525567A2 }}
+          publish-profile: ${{ secrets.PUBLISH_PROFILE }}
       # TODO slot swap
   
   deploy-staging:
@@ -53,7 +53,7 @@ jobs:
           app-name: 'ant-test-func1'
           slot-name: 'Production'
           package: '${{ env.AZURE_FUNCTIONAPP_PACKAGE_PATH }}/output'
-          publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE_C6ADCD3FF2954889AAEE9458525567A2 }}
+          publish-profile: ${{ secrets.PUBLISH_PROFILE }}
         # TODO slot swap
         
   deploy-prod:
@@ -75,7 +75,7 @@ jobs:
           app-name: 'ant-test-func1'
           slot-name: 'Production'
           package: '${{ env.AZURE_FUNCTIONAPP_PACKAGE_PATH }}/output'
-          publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE_C6ADCD3FF2954889AAEE9458525567A2 }}
+          publish-profile: ${{ secrets.PUBLISH_PROFILE }}
         # TODO slot swap
 
   deploy-prod2:
@@ -97,5 +97,5 @@ jobs:
           app-name: 'ant-test-func1'
           slot-name: 'Production'
           package: '${{ env.AZURE_FUNCTIONAPP_PACKAGE_PATH }}/output'
-          publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE_C6ADCD3FF2954889AAEE9458525567A2 }}
+          publish-profile: ${{ secrets.PUBLISH_PROFILE }}
         # TODO slot swap
