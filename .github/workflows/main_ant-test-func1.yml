@@ -38,7 +38,7 @@ jobs:
         id: fa
         with:
           app-name: 'ant-test-func1'
-          slot-name: 'pre-dev'
+          slot-name: 'Production'
           package: '${{ env.AZURE_FUNCTIONAPP_PACKAGE_PATH }}/output'
           publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE_C6ADCD3FF2954889AAEE9458525567A2 }}
       # TODO slot swap
@@ -47,7 +47,7 @@ jobs:
         uses: Azure/functions-action@v1
         with:
           app-name: 'ant-test-func1' # change if staging uses a different app
-          slot-name: 'pre-dev'       # or another slot/environment as appropriate
+          slot-name: 'Production'       # or another slot/environment as appropriate
           package: '${{ env.AZURE_FUNCTIONAPP_PACKAGE_PATH }}/output'
           publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE_C6ADCD3FF2954889AAEE9458525567A2 }}
       # TODO slot swap
