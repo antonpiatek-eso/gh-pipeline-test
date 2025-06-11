@@ -43,6 +43,8 @@ jobs:
   deploy-dev:
     needs: build
     runs-on: windows-latest
+    environment: 
+      name: dev
     steps:
       - name: Checkout GitHub Action
         uses: actions/checkout@v4
@@ -66,6 +68,8 @@ jobs:
     needs: deploy-dev
     if: ${{ always() }}
     runs-on: windows-latest
+    environment: 
+      name: staging
     steps:
       - name: Checkout GitHub Action
         uses: actions/checkout@v4
