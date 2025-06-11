@@ -14,7 +14,7 @@ env:
   DOTNET_VERSION: '8.0.x' # set this to the dotnet version to use
 
 jobs:
-  build-and-deploy:
+  build:
     runs-on: windows-latest
     
     steps:
@@ -32,22 +32,37 @@ jobs:
           pushd './${{ env.AZURE_FUNCTIONAPP_PACKAGE_PATH }}'
           dotnet build --configuration Release --output ./output
           popd
-      
-      - name: 'Run Azure Functions Action'
+
+  deploy-prod:
+    needs: build
+    runs-on: windows-latest
+    steps:
+      - name: Checkout GitHub Action
+        uses: actions/checkout@v4
+
+      - name: Deploy to Azure Functions (Production)
         uses: Azure/functions-action@v1
-        id: fa
         with:
           app-name: 'ant-test-func1'
           slot-name: 'Production'
           package: '${{ env.AZURE_FUNCTIONAPP_PACKAGE_PATH }}/output'
           publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE_C6ADCD3FF2954889AAEE9458525567A2 }}
-      # TODO slot swap
+        # TODO slot swap
+
+  deploy-staging:
+    needs: build
+    runs-on: windows-latest
+    steps:
+      - name: Checkout GitHub Action
+        uses: actions/checkout@v4
 
       - name: Deploy to Azure Functions (Staging)
         uses: Azure/functions-action@v1
         with:
-          app-name: 'ant-test-func1' # change if staging uses a different app
-          slot-name: 'Production'       # or another slot/environment as appropriate
+          app-name: 'ant-test-func1'
+          slot-name: 'Production' # or your staging slot
           package: '${{ env.AZURE_FUNCTIONAPP_PACKAGE_PATH }}/output'
           publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE_C6ADCD3FF2954889AAEE9458525567A2 }}
       # TODO slot swap
+
+
