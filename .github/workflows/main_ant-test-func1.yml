@@ -133,5 +133,3 @@ jobs:
           package: '${{ env.AZURE_FUNCTIONAPP_PACKAGE_PATH }}/output'
           publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE_C6ADCD3FF2954889AAEE9458525567A2 }}
         # TODO slot swap
-
-
