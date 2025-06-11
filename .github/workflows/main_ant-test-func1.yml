@@ -32,14 +32,49 @@ jobs:
           pushd './${{ env.AZURE_FUNCTIONAPP_PACKAGE_PATH }}'
           dotnet build --configuration Release --output ./output
           popd
+          
+      - name: Upload build artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: function-build
+          path: ${{ env.AZURE_FUNCTIONAPP_PACKAGE_PATH }}/output
 
-  deploy-prod:
+          
+  deploy-staging:
     needs: build
     runs-on: windows-latest
     steps:
       - name: Checkout GitHub Action
         uses: actions/checkout@v4
-
+      
+      - name: Download build artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: function-build
+          path: ./output        
+          
+      - name: Deploy to Azure Functions (Staging)
+        uses: Azure/functions-action@v1
+        with:
+          app-name: 'ant-test-func1'
+          slot-name: 'Production' # or your staging slot
+          package: '${{ env.AZURE_FUNCTIONAPP_PACKAGE_PATH }}/output'
+          publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE_C6ADCD3FF2954889AAEE9458525567A2 }}
+      # TODO slot swap
+  
+  deploy-prod:
+    needs: deploy-staging
+    if: ${{ always() }}
+    runs-on: windows-latest
+    steps:
+      - name: Checkout GitHub Action
+        uses: actions/checkout@v4
+      
+      - name: Download build artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: function-build
+          path: ./output
       - name: Deploy to Azure Functions (Production)
         uses: Azure/functions-action@v1
         with:
@@ -49,20 +84,6 @@ jobs:
           publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE_C6ADCD3FF2954889AAEE9458525567A2 }}
         # TODO slot swap
 
-  deploy-staging:
-    needs: build
-    runs-on: windows-latest
-    steps:
-      - name: Checkout GitHub Action
-        uses: actions/checkout@v4
-
-      - name: Deploy to Azure Functions (Staging)
-        uses: Azure/functions-action@v1
-        with:
-          app-name: 'ant-test-func1'
-          slot-name: 'Production' # or your staging slot
-          package: '${{ env.AZURE_FUNCTIONAPP_PACKAGE_PATH }}/output'
-          publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE_C6ADCD3FF2954889AAEE9458525567A2 }}
-      # TODO slot swap
+  
 
 
