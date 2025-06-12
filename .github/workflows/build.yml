@@ -2,6 +2,8 @@
 # More GitHub Actions for Azure: https://github.com/Azure/actions
 
 name: Build
+# Can't access ${{ env.MAJOR_VERSION }}.${{ env.MINOR_VERSION }} from here
+run-name: Build ${{ github.run_number }} (${{ github.ref_name }})
 
 on:
   push:
@@ -15,7 +17,9 @@ on:
 env:
   AZURE_FUNCTIONAPP_PACKAGE_PATH: '.' # set this to the path to your web app project, defaults to the repository root
   DOTNET_VERSION: '8.0.x' # set this to the dotnet version to use
-  BUILD_VERSION: 1.0.${{ github.run_number }}
+  MAJOR_VERSION: '1'
+  MINOR_VERSION: '0'
+  BUILD_VERSION: ${{ vars.MAJOR_VERSION }}.${{ vars.MINOR_VERSION }}.${{ github.run_number }}
 
 jobs:
   build:
@@ -33,7 +37,7 @@ jobs:
         shell: pwsh
         run: |
           pushd './${{ env.AZURE_FUNCTIONAPP_PACKAGE_PATH }}'
-          dotnet build --configuration Release --output ./output -p:Version=${{ env.BUILD_VERSION }}
+          dotnet build --configuration Release --output ./output
           popd
       - name: Upload build artifact
         uses: actions/upload-artifact@v4
