@@ -45,5 +45,7 @@ jobs:
     needs: build
     if: github.event_name != 'pull_request'
     uses: ./.github/workflows/deploy.yml    
+    secrets:
+      PUBLISH_PROFILE: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE_C6ADCD3FF2954889AAEE9458525567A2 }}
     with:
       artifact-name: function-build-v${{ needs.build.outputs.build_version }}
