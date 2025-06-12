@@ -19,13 +19,13 @@ jobs:
   plan-dev:
     uses: ./.github/workflows/infra_template.yml
     with:
-      environment: dev
+      environment: dev-approve
       action: plan
 
   plan-stage:
     uses: ./.github/workflows/infra_template.yml
     with:
-      environment: staging-noapproval
+      environment: staging
       action: plan
 
   plan-prod:
