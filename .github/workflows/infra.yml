@@ -17,19 +17,19 @@ on:
 
 jobs:
   plan-dev:
-    uses: ./infra_template.yml
+    uses: ./.github/workflows/infra_template.yml
     with:
       environment: dev
       action: plan
 
   plan-stage:
-    uses: ./infra_template.yml
+    uses: ./.github/workflows/infra_template.yml
     with:
       environment: stage
       action: plan
 
   plan-prod:
-    uses: ./infra_template.yml
+    uses: ./.github/workflows/infra_template.yml
     with:
       environment: prod
       action: plan
@@ -37,23 +37,23 @@ jobs:
   apply-dev:
     needs: plan-dev
     if: github.event_name != 'pull_request' && needs.plan-dev.outputs.plan_status == 'success'
-    uses: ./infra_template.yml
+    uses: ./.github/workflows/infra_template.yml
     with:
       environment: dev
       action: apply
 
   apply-stage:
-    needs: plan-stage
+    needs: [plan-stage, apply-dev]
     if: github.event_name != 'pull_request' && needs.plan-stage.outputs.plan_status == 'success'
-    uses: ./infra_template.yml
+    uses: ./.github/workflows/infra_template.yml
     with:
       environment: stage
       action: apply
 
   apply-prod:
-    needs: plan-prod
+    needs: [plan-prod, apply-stage]
     if: github.event_name != 'pull_request' && needs.plan-prod.outputs.plan_status == 'success'
-    uses: ./infra_template.yml
+    uses: ./.github/workflows/infra_template.yml
     with:
       environment: prod
       action: apply
