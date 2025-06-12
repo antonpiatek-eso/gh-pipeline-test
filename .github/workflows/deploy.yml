@@ -5,24 +5,12 @@ name: Deploy
 
 on:
   workflow_call:
-    inputs:
-      deploy_to_prod:
-        description: 'Deploy to production environments'
-        required: false
-        type: boolean
-        default: false
     secrets:
       PUBLISH_PROFILE:
         description: 'Azure publish profile for deployment'
         required: true
   workflow_dispatch:
-    inputs:
-      deploy_to_prod:
-        description: 'Deploy to production environments'
-        required: false
-        type: boolean
-        default: false
-
+    
 env:
   AZURE_FUNCTIONAPP_PACKAGE_PATH: '.' # set this to the path to your web app project, defaults to the repository root
   DOTNET_VERSION: '8.0.x' # set this to the dotnet version to use
@@ -74,7 +62,6 @@ jobs:
   deploy-prod:
     needs: deploy-staging
     runs-on: windows-latest
-    if: ${{ inputs.deploy_to_prod == true }}
     environment: 
       name: prod
     steps:
@@ -97,7 +84,6 @@ jobs:
   deploy-prod2:
     needs: deploy-staging
     runs-on: windows-latest
-    if: ${{ inputs.deploy_to_prod == true }}
     environment: 
       name: prod2
     steps:
