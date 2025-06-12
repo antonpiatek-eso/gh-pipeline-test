@@ -25,7 +25,7 @@ jobs:
   plan-stage:
     uses: ./.github/workflows/infra_template.yml
     with:
-      environment: stage
+      environment: staging-noapproval
       action: plan
 
   plan-prod:
@@ -39,7 +39,7 @@ jobs:
     if: github.event_name != 'pull_request' #&& needs.plan-dev.outputs.plan_status == 'success'
     uses: ./.github/workflows/infra_template.yml
     with:
-      environment: dev
+      environment: dev-approve
       action: apply
 
   apply-stage:
@@ -47,7 +47,7 @@ jobs:
     if: github.event_name != 'pull_request' #&& needs.plan-stage.outputs.plan_status == 'success'
     uses: ./.github/workflows/infra_template.yml
     with:
-      environment: stage
+      environment: staging
       action: apply
 
   apply-prod:
