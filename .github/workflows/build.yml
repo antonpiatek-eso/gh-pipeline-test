@@ -2,7 +2,8 @@
 # More GitHub Actions for Azure: https://github.com/Azure/actions
 
 name: Build
-run-name: Build v${{ vars.MAJOR_VERSION }}.${{ vars.MINOR_VERSION }}.${{ github.run_number }} (${{ github.ref_name }})
+# Can't access ${{ env.MAJOR_VERSION }}.${{ env.MINOR_VERSION }} from here
+run-name: Build ${{ github.run_number }} (${{ github.ref_name }})
 
 on:
   push:
