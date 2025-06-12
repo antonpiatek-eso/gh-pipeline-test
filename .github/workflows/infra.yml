@@ -43,7 +43,7 @@ jobs:
       action: apply
 
   apply-stage:
-    needs: [plan-stage, apply-dev]
+    needs: plan-stage
     if: github.event_name != 'pull_request' && needs.plan-stage.outputs.plan_status == 'success'
     uses: ./.github/workflows/infra_template.yml
     with:
@@ -51,7 +51,7 @@ jobs:
       action: apply
 
   apply-prod:
-    needs: [plan-prod, apply-stage]
+    needs: plan-prod
     if: github.event_name != 'pull_request' && needs.plan-prod.outputs.plan_status == 'success'
     uses: ./.github/workflows/infra_template.yml
     with:
