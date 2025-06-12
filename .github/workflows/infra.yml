@@ -71,7 +71,7 @@ jobs:
     needs: [plan-stage, apply-dev]
     if: github.event_name != 'pull_request' && needs.plan-stage.outputs.plan_status == 'success'
     runs-on: ubuntu-latest
-    environment: stage
+    environment: staging
     steps:
       - name: 'Checkout'
         uses: actions/checkout@v4
