@@ -48,4 +48,4 @@ jobs:
     secrets:
       PUBLISH_PROFILE: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE_C6ADCD3FF2954889AAEE9458525567A2 }}
     with:
-      artifact-name: function-build-v${{ needs.build.outputs.build_version }}
+      artifact_name: function-build-v${{ needs.build.outputs.build_version }}
