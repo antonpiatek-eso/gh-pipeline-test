@@ -7,15 +7,21 @@ on:
   push:
     branches:
       - main
+  pull_request:
+    branches:
+      - main
   workflow_dispatch:
 
 env:
   AZURE_FUNCTIONAPP_PACKAGE_PATH: '.' # set this to the path to your web app project, defaults to the repository root
   DOTNET_VERSION: '8.0.x' # set this to the dotnet version to use
+  BUILD_VERSION: 1.0.${{ github.run_number }}
 
 jobs:
   build:
     runs-on: windows-latest
+    outputs:
+      build_version: ${{ env.BUILD_VERSION }}
     steps:
       - name: 'Checkout GitHub Action'
         uses: actions/checkout@v4
@@ -27,17 +33,19 @@ jobs:
         shell: pwsh
         run: |
           pushd './${{ env.AZURE_FUNCTIONAPP_PACKAGE_PATH }}'
-          dotnet build --configuration Release --output ./output
+          dotnet build --configuration Release --output ./output -p:Version=${{ env.BUILD_VERSION }}
           popd
       - name: Upload build artifact
         uses: actions/upload-artifact@v4
         with:
-          name: function-build
+          name: function-build-v${{ env.BUILD_VERSION }}
           path: ${{ env.AZURE_FUNCTIONAPP_PACKAGE_PATH }}/output
       
   deploy:
     needs: build
+    if: github.event_name != 'pull_request'
     uses: ./.github/workflows/deploy.yml    
     secrets:
-      PUBLISH_PROFILE: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE_C6ADCD3FF2954889AAEE9458525567A2 }}     
-      
+      PUBLISH_PROFILE: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE_C6ADCD3FF2954889AAEE9458525567A2 }}
+    with:
+      artifact-name: function-build-v${{ needs.build.outputs.build_version }}
