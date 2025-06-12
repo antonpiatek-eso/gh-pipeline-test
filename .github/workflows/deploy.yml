@@ -5,6 +5,11 @@ name: Deploy
 
 on:
   workflow_call:
+    inputs:
+      artifact_name:
+        description: 'Name of the artifact to deploy'
+        required: true
+        type: string
     secrets:
       PUBLISH_PROFILE:
         description: 'Azure publish profile for deployment'
@@ -26,7 +31,7 @@ jobs:
       - name: Download build artifact
         uses: actions/download-artifact@v4
         with:
-          name: artifact_name
+          name: ${{ inputs.artifact_name }}
           path: ./output        
       - name: Deploy to Azure Functions (Staging)
         uses: Azure/functions-action@v1
@@ -48,7 +53,7 @@ jobs:
       - name: Download build artifact
         uses: actions/download-artifact@v4
         with:
-          name: artifact_name
+          name: ${{ inputs.artifact_name }}
           path: ./output
       - name: Deploy to Azure Functions (Production)
         uses: Azure/functions-action@v1
@@ -70,7 +75,7 @@ jobs:
       - name: Download build artifact
         uses: actions/download-artifact@v4
         with:
-          name: artifact_name
+          name: ${{ inputs.artifact_name }}
           path: ./output
       - name: Deploy to Azure Functions (Production)
         uses: Azure/functions-action@v1
@@ -92,7 +97,7 @@ jobs:
       - name: Download build artifact
         uses: actions/download-artifact@v4
         with:
-          name: artifact_name
+          name: ${{ inputs.artifact_name }}
           path: ./output
       - name: Deploy to Azure Functions (Production)
         uses: Azure/functions-action@v1
