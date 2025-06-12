@@ -1,0 +1,58 @@
+name: 'Terraform Action'
+description: 'Run Terraform plan or apply for a given environment'
+inputs:
+  environment:
+    description: 'Target environment'
+    required: true
+  action:
+    description: 'Either "plan" or "apply"'
+    required: true
+outputs:
+  plan_status:
+    description: 'Status of the plan step'
+    value: ${{ steps.set-status.outputs.status }}
+
+env:
+  #TF_WORKING_DIR: ./infrastructure
+  TF_WORKING_DIR: ./
+  TF_VERSION: 1.5.0
+
+runs:
+  using: 'composite'
+  steps:
+    - name: 'Setup Terraform'
+      uses: hashicorp/setup-terraform@v2
+      with:
+        terraform_version: ${{ env.tf_version }}
+    
+    #- name: 'Terraform Init'
+    #  shell: bash
+    #  working-directory: ${{ env.tf_working_dir }}
+    #  run: terraform init
+    
+    - name: 'Terraform Plan'
+      if: inputs.action == 'plan'
+      id: plan
+      shell: bash
+      working-directory: ${{ env.tf_working_dir }}
+      run: echo true
+      #terraform plan -var-file="environments/${{ inputs.environment }}.tfvars" -out=${{ inputs.environment }}.tfplan
+    
+    - name: 'Terraform Apply'
+      if: inputs.action == 'apply'
+      id: apply
+      shell: bash
+      working-directory: ${{ env.tf_working_dir }}
+      run: echo true
+      #terraform apply -var-file="environments/${{ inputs.environment }}.tfvars" -auto-approve
+    
+    - name: 'Set Status Output'
+      id: set-status
+      if: always()
+      shell: bash
+      run: |
+        if [ "${{ inputs.action }}" == "plan" ]; then
+          echo "status=${{ steps.plan.outcome }}" >> $GITHUB_OUTPUT
+        else
+          echo "status=${{ steps.apply.outcome }}" >> $GITHUB_OUTPUT
+        fi

@@ -5,55 +5,92 @@ on:
   push:
     branches:
       - main
-#    paths:
-#      - 'infrastructure/**'
   pull_request:
     branches:
       - main
-#    paths:
-#      - 'infrastructure/**'
   workflow_dispatch:
-
 
 jobs:
   plan-dev:
-    uses: ./.github/workflows/infra_template.yml
-    with:
-      environment: dev-approve
-      action: plan
+    runs-on: ubuntu-latest
+    outputs:
+      plan_status: ${{ steps.terraform.outputs.plan_status }}
+    steps:
+      - name: 'Checkout'
+        uses: actions/checkout@v4
+      - name: 'Run Terraform Plan'
+        id: terraform
+        uses: ./.github/actions/terraform
+        with:
+          environment: dev
+          action: plan
 
   plan-stage:
-    uses: ./.github/workflows/infra_template.yml
-    with:
-      environment: staging
-      action: plan
+    runs-on: ubuntu-latest
+    outputs:
+      plan_status: ${{ steps.terraform.outputs.plan_status }}
+    steps:
+      - name: 'Checkout'
+        uses: actions/checkout@v4
+      - name: 'Run Terraform Plan'
+        id: terraform
+        uses: ./.github/actions/terraform
+        with:
+          environment: staging
+          action: plan
 
   plan-prod:
-    uses: ./.github/workflows/infra_template.yml
-    with:
-      environment: prod
-      action: plan
+    runs-on: ubuntu-latest
+    outputs:
+      plan_status: ${{ steps.terraform.outputs.plan_status }}
+    steps:
+      - name: 'Checkout'
+        uses: actions/checkout@v4
+      - name: 'Run Terraform Plan'
+        id: terraform
+        uses: ./.github/actions/terraform
+        with:
+          environment: prod
+          action: plan
 
   apply-dev:
     needs: plan-dev
-    if: github.event_name != 'pull_request' #&& needs.plan-dev.outputs.plan_status == 'success'
-    uses: ./.github/workflows/infra_template.yml
-    with:
-      environment: dev-approve
-      action: apply
+    if: github.event_name != 'pull_request' && needs.plan-dev.outputs.plan_status == 'success'
+    runs-on: ubuntu-latest
+    environment: dev
+    steps:
+      - name: 'Checkout'
+        uses: actions/checkout@v4
+      - name: 'Run Terraform Apply'
+        uses: ./.github/actions/terraform
+        with:
+          environment: dev-approve
+          action: apply
 
   apply-stage:
-    needs: plan-stage
-    if: github.event_name != 'pull_request' #&& needs.plan-stage.outputs.plan_status == 'success'
-    uses: ./.github/workflows/infra_template.yml
-    with:
-      environment: staging
-      action: apply
+    needs: [plan-stage, apply-dev]
+    if: github.event_name != 'pull_request' && needs.plan-stage.outputs.plan_status == 'success'
+    runs-on: ubuntu-latest
+    environment: stage
+    steps:
+      - name: 'Checkout'
+        uses: actions/checkout@v4
+      - name: 'Run Terraform Apply'
+        uses: ./.github/actions/terraform
+        with:
+          environment: stage
+          action: apply
 
   apply-prod:
-    needs: plan-prod
-    if: github.event_name != 'pull_request' #&& needs.plan-prod.outputs.plan_status == 'success'
-    uses: ./.github/workflows/infra_template.yml
-    with:
-      environment: prod
-      action: apply
+    needs: [plan-prod, apply-stage]
+    if: github.event_name != 'pull_request' && needs.plan-prod.outputs.plan_status == 'success'
+    runs-on: ubuntu-latest
+    environment: prod
+    steps:
+      - name: 'Checkout'
+        uses: actions/checkout@v4
+      - name: 'Run Terraform Apply'
+        uses: ./.github/actions/terraform
+        with:
+          environment: prod
+          action: apply
