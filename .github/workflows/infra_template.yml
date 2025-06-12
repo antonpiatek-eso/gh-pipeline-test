@@ -26,7 +26,7 @@ on:
 jobs:
   terraform:
     runs-on: ubuntu-latest
-    environment: ${{ inputs.environment }}
+    environment: ${{ inputs.action == 'apply' && inputs.environment || '' }}
     outputs:
       plan_status: ${{ steps.plan.outcome }}
     steps:
