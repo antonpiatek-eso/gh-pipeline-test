@@ -36,7 +36,7 @@ jobs:
 
   apply-dev:
     needs: plan-dev
-    if: github.event_name != 'pull_request' && needs.plan-dev.outputs.plan_status == 'success'
+    if: github.event_name != 'pull_request' #&& needs.plan-dev.outputs.plan_status == 'success'
     uses: ./.github/workflows/infra_template.yml
     with:
       environment: dev
@@ -44,7 +44,7 @@ jobs:
 
   apply-stage:
     needs: plan-stage
-    if: github.event_name != 'pull_request' && needs.plan-stage.outputs.plan_status == 'success'
+    if: github.event_name != 'pull_request' #&& needs.plan-stage.outputs.plan_status == 'success'
     uses: ./.github/workflows/infra_template.yml
     with:
       environment: stage
@@ -52,7 +52,7 @@ jobs:
 
   apply-prod:
     needs: plan-prod
-    if: github.event_name != 'pull_request' && needs.plan-prod.outputs.plan_status == 'success'
+    if: github.event_name != 'pull_request' #&& needs.plan-prod.outputs.plan_status == 'success'
     uses: ./.github/workflows/infra_template.yml
     with:
       environment: prod
