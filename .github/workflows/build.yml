@@ -2,6 +2,7 @@
 # More GitHub Actions for Azure: https://github.com/Azure/actions
 
 name: Build
+run-name: Build v${{ vars.MAJOR_VERSION }}.${{ vars.MINOR_VERSION }}.${{ github.run_number }} (${{ github.ref_name }})
 
 on:
   push:
@@ -15,7 +16,9 @@ on:
 env:
   AZURE_FUNCTIONAPP_PACKAGE_PATH: '.' # set this to the path to your web app project, defaults to the repository root
   DOTNET_VERSION: '8.0.x' # set this to the dotnet version to use
-  BUILD_VERSION: 1.0.${{ github.run_number }}
+  MAJOR_VERSION: '1'
+  MINOR_VERSION: '0'
+  BUILD_VERSION: ${{ vars.MAJOR_VERSION }}.${{ vars.MINOR_VERSION }}.${{ github.run_number }}
 
 jobs:
   build:
